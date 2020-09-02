@@ -1,6 +1,11 @@
 # goornogo
 
-Enforce coverage test in your golang project pipeline.
+Go Or No Go. Enforce coverage test in your golang project pipeline.
+Goornogo will calculate coverage percentage from all tested golang source
+code getting tested by the `go test`, not package by package.
+ 
+If your Go project meet minimum coverage percentage, 
+the pipeline will finish without error. Otherwise your build will fail.
 
 ## Install
 
@@ -8,7 +13,7 @@ Enforce coverage test in your golang project pipeline.
 $ go install github.com/newm4n/goornogo
 ```
 
-## In your pipeline
+## Usage in the pipeline
 
 ```text
 go test ./... -covermode=count -coverprofile=coverage.out
@@ -144,7 +149,6 @@ jobs:
 
 ## How you do that ?
 
-Goornogo logic is based on 
-
-[This code](https://github.com/golang/go/blob/2bc8d90fa21e9547aeb0f0ae775107dc8e05dc0a/src/cmd/cover/html.go#L96)
-and [this code](https://github.com/golang/go/blob/2bc8d90fa21e9547aeb0f0ae775107dc8e05dc0a/src/cmd/cover/profile.go#L56) 
+Goornogo will read the produced coverage report file from `go test`.
+It uses logic from [this code](https://github.com/golang/go/blob/2bc8d90fa21e9547aeb0f0ae775107dc8e05dc0a/src/cmd/cover/html.go#L96)
+and [this code](https://github.com/golang/go/blob/2bc8d90fa21e9547aeb0f0ae775107dc8e05dc0a/src/cmd/cover/profile.go#L56) to understand the format and how to calculate the percentage. 
