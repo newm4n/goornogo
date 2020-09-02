@@ -152,3 +152,7 @@ jobs:
 Goornogo will read the produced coverage report file from `go test`.
 It uses logic from [this code](https://github.com/golang/go/blob/2bc8d90fa21e9547aeb0f0ae775107dc8e05dc0a/src/cmd/cover/html.go#L96)
 and [this code](https://github.com/golang/go/blob/2bc8d90fa21e9547aeb0f0ae775107dc8e05dc0a/src/cmd/cover/profile.go#L56) to understand the format and how to calculate the percentage. 
+
+## Twist
+
+This tiny winny fluffy project talks about code-coverage. While itself don't have any.

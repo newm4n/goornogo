@@ -40,12 +40,8 @@ func main() {
 	regex=regx
 
 	info, err := os.Stat(coverFile)
-	if os.IsNotExist(err) {
-		fmt.Printf("File not exist : %s", coverFile)
-		os.Exit(1)
-	}
-	if info.IsDir() {
-		fmt.Printf("Not a file : %s", coverFile)
+	if os.IsNotExist(err) || info.IsDir() {
+		fmt.Printf("File not exist or its a directory : %s", coverFile)
 		os.Exit(1)
 	}
 
