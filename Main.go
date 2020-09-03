@@ -11,13 +11,13 @@ import (
 )
 
 var (
-	coverFile string
+	coverFile       string
 	minimumCoverage float64
-	regex *regexp.Regexp
-	totalStatement = 0
-	totalCounted = 0
-	lineCount = 0
-	verbose = false
+	lineRe          = regexp.MustCompile(`^(.+):([0-9]+).([0-9]+),([0-9]+).([0-9]+) ([0-9]+) ([0-9]+)$`)
+	totalStatement  = 0
+	totalCounted    = 0
+	lineCount       = 0
+	verbose         = false
 )
 
 func main() {
@@ -28,16 +28,10 @@ func main() {
 	flag.Parse()
 
 	if minimumCoverage < 1 || len(coverFile) == 0 {
-		_,_ = fmt.Fprintln(os.Stdout, "Usage : -i <coverage.out> -c <minimum percentage>")
+		_, _ = fmt.Fprintln(os.Stdout, "Usage : -i <coverage.out> -c <minimum percentage>")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-
-	regx, err := regexp.Compile(`^[a-zA-Z0-9/\.\-]+:([0-9]+).([0-9]+),([0-9]+).([0-9]+)\s+([0-9]+)\s+([0-9]+)$`)
-	if err!=nil {
-		panic(err)
-	}
-	regex=regx
 
 	info, err := os.Stat(coverFile)
 	if os.IsNotExist(err) || info.IsDir() {
@@ -68,25 +62,28 @@ func main() {
 	}
 
 	coverage := (float64(totalCounted) / float64(totalStatement)) * float64(100)
-	if verbose {
-		fmt.Printf("Coverage %.2f of minimum %.2f percent \n", coverage, minimumCoverage)
-	}
 	if coverage < minimumCoverage {
+		if verbose {
+			fmt.Printf("Coverage %.2f of minimum %.2f percent. [FAIL] \n", coverage, minimumCoverage)
+		}
 		os.Exit(1)
 	} else {
+		if verbose {
+			fmt.Printf("Coverage %.2f of minimum %.2f percent. [OK] \n", coverage, minimumCoverage)
+		}
 		os.Exit(0)
 	}
 }
 
 func process(line string) {
-	subMatch := regex.FindAllStringSubmatch(line, -1)
+	subMatch := lineRe.FindStringSubmatch(line)
 	if len(subMatch) > 0 && len(subMatch[0]) > 0 {
 		lineCount++
-		statements, err := strconv.Atoi(subMatch[0][5])
+		statements, err := strconv.Atoi(subMatch[6])
 		if err != nil {
 			return
 		}
-		count, err := strconv.Atoi(subMatch[0][6])
+		count, err := strconv.Atoi(subMatch[7])
 		if err != nil {
 			return
 		}
