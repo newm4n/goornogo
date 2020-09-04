@@ -61,6 +61,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	if totalStatement == 0 && minimumCoverage > 0 {
+		if verbose {
+			fmt.Printf("The report shows no test. [FAIL] \n")
+		}
+		os.Exit(1)
+	}
+
 	coverage := (float64(totalCounted) / float64(totalStatement)) * float64(100)
 	if coverage < minimumCoverage {
 		if verbose {
